@@ -1,17 +1,407 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Movie API Documentation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <h1>Movie API Documentation</h1>
-    <p>
-      This API lets you access information about movies, directors, and genres.
-      It’s built with Node.js using the <code>http</code>, <code>url</code>, and
-      <code>fs</code> modules. You can use this API to power websites or apps
-      that need movie data.
-    </p>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <title>myFlix Movie API Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ccc;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: #333;
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: #f8f8f8;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>myFlix Movie API Documentation</h1>
+
+  <p>
+    The <strong>myFlix API</strong> is a RESTful web service built with
+    <strong>Node.js</strong> and <strong>Express</strong>. It provides
+    movie-related information to clients such as web applications and mobile
+    apps. The API supports:
+  </p>
+
+  <ul>
+    <li>Retrieving information about movies, genres, and directors</li>
+    <li>User registration and updates</li>
+    <li>Managing a user’s list of favorite movies</li>
+    <li>User deregistration</li>
+  </ul>
+
+  <h2>API Endpoints Overview</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Request</th>
+        <th>URL</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Get all movies</td>
+        <td><code>/movies</code></td>
+        <td>GET</td>
+        <td>Returns a list of all movies</td>
+      </tr>
+      <tr>
+        <td>Get a movie by title</td>
+        <td><code>/movies/:title</code></td>
+        <td>GET</td>
+        <td>Returns details for a specific movie by title</td>
+      </tr>
+      <tr>
+        <td>Get genre info</td>
+        <td><code>/genres/:name</code></td>
+        <td>GET</td>
+        <td>Returns details about a specific genre</td>
+      </tr>
+      <tr>
+        <td>Get director info</td>
+        <td><code>/directors/:name</code></td>
+        <td>GET</td>
+        <td>Returns details about a specific director</td>
+      </tr>
+      <tr>
+        <td>Register a user</td>
+        <td><code>/users</code></td>
+        <td>POST</td>
+        <td>Registers a new user</td>
+      </tr>
+      <tr>
+        <td>Update user information</td>
+        <td><code>/users/:username</code></td>
+        <td>PUT</td>
+        <td>Updates an existing user’s information</td>
+      </tr>
+      <tr>
+        <td>Add movie to favorites</td>
+        <td><code>/users/:username/favorites/:movieId</code></td>
+        <td>POST</td>
+        <td>Adds a movie to a user’s list of favorites</td>
+      </tr>
+      <tr>
+        <td>Remove movie from favorites</td>
+        <td><code>/users/:username/favorites/:movieId</code></td>
+        <td>DELETE</td>
+        <td>Removes a movie from a user’s list of favorites</td>
+      </tr>
+      <tr>
+        <td>Deregister a user</td>
+        <td><code>/users/:username</code></td>
+        <td>DELETE</td>
+        <td>Deletes a user account</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Endpoint Details</h2>
+
+  <!-- GET /movies -->
+  <h3>GET /movies</h3>
+  <p><strong>Description:</strong> Returns a list of all movies in the myFlix API.</p>
+  <p><strong>Endpoint URL:</strong> <code>/movies</code></p>
+  <p><strong>Method:</strong> GET</p>
+  <p><strong>Query Parameters:</strong> None</p>
+  <p><strong>Request Body:</strong> None</p>
+  <p><strong>Response Format:</strong> JSON array of movie objects.</p>
+
+  <pre>
+Status: 200 OK
+[
+  {
+    "id": 1,
+    "title": "Inception",
+    "genre": "Sci-Fi",
+    "director": "Christopher Nolan",
+    "description": "A skilled thief who steals information through dreams is given a chance to erase his criminal record.",
+    "imageURL": "https://m.media-amazon.com/images/I/51zUbui+gbL._AC_.jpg",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "Parasite",
+    "genre": "Thriller",
+    "director": "Bong Joon-ho",
+    "description": "A poor family schemes to become employed by a wealthy household and infiltrate their lives.",
+    "imageURL": "https://m.media-amazon.com/images/I/91qvN3eNqvL._AC_UF894,1000_QL80_.jpg",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Whiplash",
+    "genre": "Drama",
+    "director": "Damien Chazelle",
+    "description": "A young drummer enrolls in a music conservatory where he faces abuse from a ruthless instructor.",
+    "imageURL": "https://m.media-amazon.com/images/I/71pVtxg0uAL._AC_UF894,1000_QL80_.jpg",
+    "featured": false
+  }
+]
+    </pre>
+
+  <hr />
+
+  <!-- GET /movies/:title -->
+  <h3>GET /movies/:title</h3>
+  <p><strong>Description:</strong> Returns data about a single movie, identified by its title.</p>
+  <p><strong>Endpoint URL:</strong> <code>/movies/:title</code></p>
+  <p><strong>Method:</strong> GET</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>title</code> – The title of the movie (string). Case-insensitive.</li>
+  </ul>
+  <p><strong>Request Body:</strong> None</p>
+  <p><strong>Response Format:</strong> JSON object representing the movie, or plain text if not found.</p>
+
+  <pre>
+Example Request:
+GET /movies/Inception
+
+Status: 200 OK
+{
+  "id": 1,
+  "title": "Inception",
+  "genre": "Sci-Fi",
+  "director": "Christopher Nolan",
+  "description": "A skilled thief who steals information through dreams is given a chance to erase his criminal record.",
+  "imageURL": "https://m.media-amazon.com/images/I/51zUbui+gbL._AC_.jpg",
+  "featured": true
+}
+
+If movie is not found:
+Status: 404 Not Found
+Movie not found.
+    </pre>
+
+  <hr />
+
+  <!-- GET /genres/:name -->
+  <h3>GET /genres/:name</h3>
+  <p><strong>Description:</strong> Returns information about a genre by name. Currently returns a simple text response
+    as a placeholder.</p>
+  <p><strong>Endpoint URL:</strong> <code>/genres/:name</code></p>
+  <p><strong>Method:</strong> GET</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>name</code> – The name of the genre (e.g., <code>Thriller</code>).</li>
+  </ul>
+  <p><strong>Request Body:</strong> None</p>
+  <p><strong>Response Format:</strong> Plain text message containing the genre name.</p>
+
+  <pre>
+Example Request:
+GET /genres/Thriller
+
+Status: 200 OK
+Information about the genre: Thriller
+    </pre>
+
+  <hr />
+
+  <!-- GET /directors/:name -->
+  <h3>GET /directors/:name</h3>
+  <p><strong>Description:</strong> Returns information about a director by name. Currently returns a simple text
+    response as a placeholder.</p>
+  <p><strong>Endpoint URL:</strong> <code>/directors/:name</code></p>
+  <p><strong>Method:</strong> GET</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>name</code> – The name of the director (e.g., <code>Christopher Nolan</code>).</li>
+  </ul>
+  <p><strong>Request Body:</strong> None</p>
+  <p><strong>Response Format:</strong> Plain text message containing the director name.</p>
+
+  <pre>
+Example Request:
+GET /directors/Christopher%20Nolan
+
+Status: 200 OK
+Information about the director: Christopher Nolan
+    </pre>
+
+  <hr />
+
+  <!-- POST /users -->
+  <h3>POST /users</h3>
+  <p><strong>Description:</strong> Registers a new user in the myFlix application.</p>
+  <p><strong>Endpoint URL:</strong> <code>/users</code></p>
+  <p><strong>Method:</strong> POST</p>
+  <p><strong>Path/Query Parameters:</strong> None</p>
+  <p><strong>Request Body:</strong> JSON object with user information.</p>
+
+  <pre>
+Example Request Body:
+{
+  "username": "johndoe",
+  "password": "password123",
+  "email": "john@example.com"
+}
+    </pre>
+
+  <p><strong>Response Format:</strong> Plain text confirming successful registration, or an error message if the
+    username is missing.</p>
+
+  <pre>
+If username is provided:
+Status: 201 Created
+User johndoe registered successfully.
+
+If username is missing:
+Status: 400 Bad Request
+Username required.
+    </pre>
+
+  <hr />
+
+  <!-- PUT /users/:username -->
+  <h3>PUT /users/:username</h3>
+  <p><strong>Description:</strong> Updates information for an existing user (e.g., username or other details).</p>
+  <p><strong>Endpoint URL:</strong> <code>/users/:username</code></p>
+  <p><strong>Method:</strong> PUT</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>username</code> – The current username of the user to update.</li>
+  </ul>
+  <p><strong>Request Body:</strong> JSON object with updated user information (placeholder for future implementation).
+  </p>
+
+  <pre>
+Example Request:
+PUT /users/johndoe
+
+Request Body:
+{
+  "username": "john.doe.updated",
+  "email": "john.updated@example.com"
+}
+
+Response:
+Status: 200 OK
+User johndoe information updated.
+    </pre>
+
+  <hr />
+
+  <!-- POST /users/:username/favorites/:movieId -->
+  <h3>POST /users/:username/favorites/:movieId</h3>
+  <p><strong>Description:</strong> Adds a movie to a user’s list of favorite movies.</p>
+  <p><strong>Endpoint URL:</strong> <code>/users/:username/favorites/:movieId</code></p>
+  <p><strong>Method:</strong> POST</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>username</code> – The username of the user.</li>
+    <li><code>movieId</code> – The ID of the movie to add to favorites.</li>
+  </ul>
+  <p><strong>Request Body:</strong> None.</p>
+  <p><strong>Response Format:</strong> Plain text confirming that the movie was added to the user’s favorites.</p>
+
+  <pre>
+Example Request:
+POST /users/johndoe/favorites/2
+
+Status: 201 Created
+Movie 2 added to johndoe's favorites.
+    </pre>
+
+  <hr />
+
+  <!-- DELETE /users/:username/favorites/:movieId -->
+  <h3>DELETE /users/:username/favorites/:movieId</h3>
+  <p><strong>Description:</strong> Removes a movie from a user’s list of favorite movies.</p>
+  <p><strong>Endpoint URL:</strong> <code>/users/:username/favorites/:movieId</code></p>
+  <p><strong>Method:</strong> DELETE</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>username</code> – The username of the user.</li>
+    <li><code>movieId</code> – The ID of the movie to remove from favorites.</li>
+  </ul>
+  <p><strong>Request Body:</strong> None.</p>
+  <p><strong>Response Format:</strong> Plain text confirming that the movie was removed.</p>
+
+  <pre>
+Example Request:
+DELETE /users/johndoe/favorites/2
+
+Status: 200 OK
+Movie 2 removed from johndoe's favorites.
+    </pre>
+
+  <hr />
+
+  <!-- DELETE /users/:username -->
+  <h3>DELETE /users/:username</h3>
+  <p><strong>Description:</strong> Deregisters an existing user from the myFlix application.</p>
+  <p><strong>Endpoint URL:</strong> <code>/users/:username</code></p>
+  <p><strong>Method:</strong> DELETE</p>
+  <p><strong>Path Parameters:</strong></p>
+  <ul>
+    <li><code>username</code> – The username of the user to deregister.</li>
+  </ul>
+  <p><strong>Request Body:</strong> None.</p>
+  <p><strong>Response Format:</strong> Plain text confirming that the user has been removed.</p>
+
+  <pre>
+Example Request:
+DELETE /users/johndoe
+
+Status: 200 OK
+User johndoe deregistered.
+    </pre>
+
+  <hr />
+
+  <h2>Testing with Postman</h2>
+  <p>
+    Each of the endpoints above was tested using Postman. For each request:
+  </p>
+  <ul>
+    <li>The correct HTTP method (GET, POST, PUT, DELETE) was selected.</li>
+    <li>The request URL matched the endpoint (e.g., <code>http://localhost:8080/movies</code>).</li>
+    <li>For POST and PUT requests, the body was sent as raw JSON.</li>
+    <li>The response status code and body were verified and captured in screenshots.</li>
+  </ul>
+
+</body>
+
 </html>
