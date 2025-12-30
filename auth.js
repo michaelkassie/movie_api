@@ -3,11 +3,11 @@ const passport = require('passport');
 
 require('./passport');
 
-const jwtSecret = process.env.JWT_SECRET; // MUST match passport.js
+const jwtSecret = process.env.JWT_SECRET; 
 
 const generateJWTToken = (user) => {
   return jwt.sign(
-    { _id: user._id, Username: user.Username }, // minimal payload
+    { _id: user._id, Username: user.Username }, 
     jwtSecret,
     {
       subject: user.Username,

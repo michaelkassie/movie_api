@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 // 1. Return a list of ALL movies
 app.get(
   '/movies',
-  passport.authenticate('jwt', { session: false }),
+  
   async (req, res) => {
     try {
       const movies = await Movies.find();
@@ -170,7 +170,6 @@ app.get(
 );
 
 // 6. Allow users to update their user info - PROTECTED + AUTH CHECK
-// ✅ Validation + ✅ Hash password IF they are updating it
 app.put(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
