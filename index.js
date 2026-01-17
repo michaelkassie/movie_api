@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 // 1. Return a list of ALL movies
 app.get(
   '/movies',
-  
+  passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
       const movies = await Movies.find();
@@ -50,6 +50,7 @@ app.get(
     }
   }
 );
+
 
 // 2. Return data about a single movie by title
 app.get(

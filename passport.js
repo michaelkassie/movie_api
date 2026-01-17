@@ -24,7 +24,7 @@ passport.use(
           return done(null, false, { message: 'Incorrect username or password.' });
         }
 
-        // ✅ compare plaintext password to hashed password in DB
+        // compare plaintext password to hashed password in DB
         if (!user.validatePassword(password)) {
           return done(null, false, { message: 'Incorrect username or password.' });
         }
@@ -42,7 +42,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET, // ✅ use env var
+      secretOrKey: process.env.JWT_SECRET, // 
     },
     async (jwtPayload, done) => {
       try {

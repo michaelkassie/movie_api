@@ -1,5 +1,6 @@
 // models.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 // Movie schema
 let movieSchema = mongoose.Schema({
@@ -7,16 +8,16 @@ let movieSchema = mongoose.Schema({
   Description: { type: String, required: true },
   Genre: {
     Name: String,
-    Description: String
+    Description: String,
   },
   Director: {
     Name: String,
     Bio: String,
-    
+    Birth: String,
   },
   Actors: [String],
   ImagePath: String,
-  Featured: Boolean
+  Featured: Boolean,
 });
 
 // User schema
@@ -25,15 +26,27 @@ let userSchema = mongoose.Schema({
   Password: { type: String, required: true },
   Email: { type: String, required: true },
   Birthday: Date,
-  FavoriteMovies: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Movie'
-  }]
+  FavoriteMovies: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Movie",
+    },
+  ],
 });
 
+// Password hashing (used when creating users)
+userSchema.statics.hashPassword = (password) => {
+  return bcrypt.hashSync(password, 10);
+};
+
+// Password validation (used during login)
+userSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.Password);
+};
+
 // Models
-let Movie = mongoose.model('Movie', movieSchema);
-let User = mongoose.model('User', userSchema);
+let Movie = mongoose.model("Movie", movieSchema);
+let User = mongoose.model("User", userSchema);
 
 // Export models
 module.exports.Movie = Movie;
